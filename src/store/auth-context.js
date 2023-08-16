@@ -2,6 +2,7 @@ import { createContext, useState } from "react";
 
 const AuthContext = createContext({
     token : '',
+    email : '',
     isLoggedIn : false,
     login : (token) => {},
     logout : () => {},
@@ -9,14 +10,19 @@ const AuthContext = createContext({
 
 export const AuthContextProvider = (props) => {
     const intialToken = localStorage.getItem('token');
+    const initialEmail  = localStorage.getItem('email')
 
     const [token, setToken] = useState(intialToken);
+    const [email, setEmail] = useState(initialEmail)
 
     const userIsLoggedIn = !!token;
 
-    const loginHandler = (token) => {
+    const loginHandler = (token, recievedEmail) => {
         localStorage.setItem('token', token);
-        setToken(token)
+        setToken(token);
+
+        localStorage.setItem('email', recievedEmail)
+        setEmail(recievedEmail);
     }
 
     const logoutHandler = () => {
@@ -26,6 +32,7 @@ export const AuthContextProvider = (props) => {
 
     const ContextValue = {
         token : token,
+        email : email,
         isLoggedIn : userIsLoggedIn,
         login : loginHandler,
         logout : logoutHandler
