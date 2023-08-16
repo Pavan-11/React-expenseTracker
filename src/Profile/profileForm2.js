@@ -14,6 +14,8 @@ import AuthContext from '../store/auth-context';
 
 import { useEffect, useState } from 'react';
 
+import LogoutButton from '../Buttons/logoutButton';
+
 
 
 const CompleteProfile = () => {
@@ -55,12 +57,6 @@ const CompleteProfile = () => {
         }
 
         console.log(photoUrl)
-
-        // const formData = new FormData();
-
-        // formData.append('displayName', enteredName);
-
-        // formData.append('photoUrl', photoUrl);
 
         let token = authCtx.token
 
@@ -204,7 +200,7 @@ const CompleteProfile = () => {
 
                     userData.photoUrl ? (
 
-                        <img style={{height: '100px',width: '30%'}} src={userData.photoUrl} alt="Profile" />
+                        <img src={userData.photoUrl} alt="Profile" />
 
                     ) : (
 
@@ -221,6 +217,8 @@ const CompleteProfile = () => {
                 Update details
 
             </Button>
+
+            <LogoutButton />
 
         </Form>
 
