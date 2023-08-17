@@ -218,7 +218,9 @@ const CompleteProfile = () => {
 
             </Button>
 
-            <LogoutButton />
+            <div className={classes.logout}>
+                <LogoutButton />
+            </div>
 
         </Form>
 

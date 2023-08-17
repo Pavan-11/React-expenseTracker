@@ -1,0 +1,63 @@
+.form{
+    display: flex;
+    flex-direction: column;
+    width: 20vw;
+    justify-content: center;
+    margin: 2rem 35rem;
+}
+
+.form h2{
+    color: darkcyan;
+    font-weight: bolder;
+    text-align: center;
+    text-decoration: 2px solid black underline;
+}
+
+.form label{
+    font-size: 22px;
+    color: brown;
+    font-weight: bold;
+    padding: 5px 1px;
+}
+
+.form input{
+    border: 1.5px solid;
+    outline: none;
+    background-color: lightgrey;
+}
+
+.form select{
+    border: 1.5px solid;
+    background-color: lightgrey;
+    color: chocolate;
+    padding-bottom: 3px;
+    margin-bottom: 1.8rem;
+}
+.form button{
+    background-color: rgb(41, 8, 188);
+    height: 3rem;
+    text-align: center;
+    width: 10rem;
+    border: none;
+    border-radius: 2rem;
+    cursor: pointer;
+    position: relative;
+    left: 3.8rem;
+}
+
+.table{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.table h2{
+    color: rgb(39, 68, 69);
+    font-family: cursive;
+}
+
+.tr{
+    position: relative;
+    right: 5rem;
+}

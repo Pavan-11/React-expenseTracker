@@ -3,7 +3,8 @@ import { useContext } from 'react';
 import AuthContext from './store/auth-context';
 import AuthPage from './pages/AuthPage';
 import Profile from './pages/profile';
-import ProfileForm from './Profile/ProfileForm';
+import CompleteProfile from './Profile/profileForm2';
+import ExpensesForm from './pages/expensesForm';
 
 
 
@@ -24,7 +25,11 @@ function App() {
       </Route>
 
       <Route path="/profileForm">
-        <ProfileForm />
+        <CompleteProfile />
+      </Route>
+
+      <Route path='/expenseForm'>
+          <ExpensesForm />
       </Route>
 
       <Route path="*">

@@ -7,19 +7,27 @@ import LogoutButton from '../Buttons/logoutButton';
 const Profile = () => {
   return (
     <>
-    <header className={classes.header}>
+      <header className={classes.header}>
 
-    <div>
-        <h2>Welcome to Expense Tracker</h2>
-    </div>
+        <div>
+          <h3>Welcome to Expense Tracker</h3>
+        </div>
 
-    <div>
-        <h2>Your Profile is incomplete <Link to ="/profileForm">Complete Now</Link></h2>
-    </div>
-    </header>
+        <div>
+          <h3>Your Profile is incomplete <Link to="/profileForm">Complete Now</Link></h3>
+        </div>
 
-    <VerifyEmail />
-    <LogoutButton />
+
+        <VerifyEmail />
+
+        <div>
+          <LogoutButton />
+        </div>
+
+      </header>
+
+
+      <Link to='/expenseForm'>Go To Daily Expenses</Link>
     </>
   )
 }
