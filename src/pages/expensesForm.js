@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import classes from './expenseForm.module.css';
 
 const ExpensesForm = () => {
@@ -7,17 +8,41 @@ const ExpensesForm = () => {
     const [price, setPrice] = useState('');
     const [category, setCategory] = useState('fuel');
 
-    const addExpense = (event) => {
+
+    useEffect(() => {
+
+        fetchExpenses();
+    },[]);
+
+    const fetchExpenses = async() => {
+        try{
+            const response = await axios.get('https://expensetracker-d7655-default-rtdb.firebaseio.com/expenses.json');
+            if(response.data){
+                const expenseList = Object.values(response.data);
+                setExpenses(expenseList);
+            }
+        }catch(error){
+            console.error('Error fetching expenses:', error);
+        }
+    };
+
+    const addExpense = async(event) => {
         event.preventDefault();
         const newExpense = {
             description,
             price: parseFloat(price),
             category
         };
-        setExpenses([...expenses, newExpense]);
-        setDescription('');
-        setPrice('');
-        setCategory('fuel');
+
+        try{
+            await axios.post('https://expensetracker-d7655-default-rtdb.firebaseio.com/expenses.json', newExpense);
+            setDescription('');
+            setPrice('');
+            setCategory('fuel');
+            fetchExpenses();
+        }catch(error){
+            console.error('Error adding expense:',error)
+        }
     };
 
     return (
