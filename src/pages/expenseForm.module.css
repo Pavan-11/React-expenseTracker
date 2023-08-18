@@ -6,7 +6,7 @@
     margin: 2rem 35rem;
 }
 
-.form h2{
+.h2{
     color: darkcyan;
     font-weight: bolder;
     text-align: center;
@@ -48,7 +48,7 @@
 .table{
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: space-evenly;
     align-items: center;
 }
 
@@ -58,6 +58,10 @@
 }
 
 .tr{
+    display: flex;
+    justify-content: space-around;
+}
+.tr td{
     position: relative;
-    right: 5rem;
+    left: 1.5rem;
 }
