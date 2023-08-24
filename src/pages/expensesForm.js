@@ -2,6 +2,12 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import classes from './expenseForm.module.css';
 import { Button } from 'react-bootstrap';
+import Papa from 'papaparse';
+
+import { useDispatch, useSelector } from 'react-redux';
+import { addExpenses, deleteExpense, updateExpense } from '../store/expenseReducer';
+import { toggleTheme } from '../store/themeReducer';
+
 
 const ExpensesForm = () => {
     const [expenses, setExpenses] = useState([]);
@@ -10,9 +16,68 @@ const ExpensesForm = () => {
     const [category, setCategory] = useState('fuel');
     const [editingExpenseId, setEditingExpenseId] = useState(null);
 
+
+    const dispatch = useDispatch();
+    const isDarkedTheme = useSelector((state) => state.theme.mode === 'dark');
+    const isPremium = expenses.some((expense) => expense.price > 10000);
+    // const expenseList = useSelector((state) => state.expense.expenses);
+    // const showPremiumButton = useSelector(state => state.expense.showPremiumButton);
+
+
+    const activatePremimumHandler = () => {
+        if (isPremium) {
+            // if(!isDarkedTheme){
+                dispatch(toggleTheme());
+            // }
+        }
+    };
+
+    const calculateTotalPrice = () => {
+        const total = expenses.reduce((accumulator, expense) => accumulator + parseFloat(expense.price), 0);
+        return total.toFixed(2); // Convert to fixed decimal places if needed
+    };
+
+    const downloadCSV = () => {
+        const csvData = Papa.unparse(expenses);
+        const blob = new Blob([csvData], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement('a');
+        const url = URL.createObjectURL(blob);
+        link.setAttribute('href', url);
+        link.setAttribute('download', 'expenses.csv');
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    };
+
+
+
+
+
     useEffect(() => {
         fetchExpenses();
+        // loadThemeStyles();
     }, []);
+
+    useEffect(() => {
+        if(isDarkedTheme){
+            console.log('Applying dark theme');
+            document.body.classList.add(classes.darkTheme);
+        }else{
+            console.log('removing dark theme');
+            document.body.classList.remove(classes.darkTheme);
+        }
+    },[isDarkedTheme]);
+
+    // const loadThemeStyles = () => {
+    //     const rootElement = document.documentElement; // Get the <html> element
+    //     if (themeMode === 'dark') {
+    //         rootElement.classList.add('dark-theme'); // Add a class for dark theme
+    //     } else {
+    //         rootElement.classList.remove('dark-theme'); // Remove the class if not dark theme
+    //     }
+    // };
+
 
     const fetchExpenses = async () => {
         try {
@@ -45,16 +110,18 @@ const ExpensesForm = () => {
             setPrice('');
             setCategory('fuel');
             fetchExpenses();
+            dispatch(addExpenses({ expense: newExpense }));
         } catch (error) {
             console.error('Error adding expense:', error)
         }
     };
 
-    const deleteExpense = async (id) => {
+    const deletedExpense = async (id) => {
         try {
             await axios.delete(`https://expensetracker-d7655-default-rtdb.firebaseio.com/expenses/${id}.json`);
             console.log('id deleted', id);
             fetchExpenses();//fetching updated expenses after deleting
+            dispatch(deleteExpense({ id }))
         } catch (error) {
             console.error('Error deleting expense: ', error);
         }
@@ -75,23 +142,31 @@ const ExpensesForm = () => {
         setPrice('');
     };
 
-    const saveEdit = async() => {
+    const saveEdit = async () => {
         const editedExpense = {
             description,
-            price :parseFloat(price ),
+            price: parseFloat(price),
             category
         };
-        try{
+        try {
             await axios.put(`https://expensetracker-d7655-default-rtdb.firebaseio.com/expenses/${editingExpenseId}.json`, editedExpense);
             setEditingExpenseId(null);
             fetchExpenses();
-        }catch(error){
+            dispatch(updateExpense({ id: editingExpenseId, ...editedExpense }))
+        } catch (error) {
             console.error('Error editing exoense', error)
         }
     }
 
     return (
         <div>
+           <button className={classes.premiumButton} onClick={activatePremimumHandler}>Activate Premium</button>
+            {isPremium && (
+                <button className={classes.toggleButton} onClick={() => dispatch(toggleTheme())}>
+                    {!isDarkedTheme ? 'Dark' : 'Light'}
+                </button>
+            )}
+            
             <form onSubmit={addExpense} className={classes.form}>
                 <h2>Daily Expenses</h2>
                 <label htmlFor='description'>Description: </label>
@@ -131,7 +206,7 @@ const ExpensesForm = () => {
             <div>
                 <h2 className={classes.h2}>Expenses entered by the user:</h2>
                 <table className={classes.table}>
-                    <thead style={{width: '100vw'}}>
+                    <thead style={{ width: '100vw' }}>
                         <tr className={classes.tr}>
                             <th style={{ padding: '1rem 10rem' }}>Description</th>
                             <th style={{ padding: '1rem 10rem' }}>Price</th>
@@ -139,7 +214,7 @@ const ExpensesForm = () => {
                             <th style={{ padding: '1rem 10rem' }}>Actions</th>
                         </tr>
                     </thead>
-                    <tbody style={{width: '100vw'}}>
+                    <tbody style={{ width: '100vw' }}>
                         {expenses.map((expense) => (
                             <tr key={expense.id} className={classes.tr}>
                                 <td style={{ padding: '1rem 10rem', position: 'relative', left: '2rem' }}>
@@ -188,7 +263,7 @@ const ExpensesForm = () => {
                                     ) : (
                                         <div>
                                             <Button className='m-3' size="sm" onClick={() => editExpense(expense.id)}>Edit</Button>
-                                            <Button size="sm" onClick={() => deleteExpense(expense.id)}>Delete</Button>
+                                            <Button size="sm" onClick={() => deletedExpense(expense.id)}>Delete</Button>
                                         </div>
                                     )}
                                 </td>
@@ -197,6 +272,9 @@ const ExpensesForm = () => {
                         ))}
                     </tbody>
                 </table>
+                <button className={classes.downloadButton} onClick={downloadCSV}>
+                    Download File
+                </button>
             </div>
         </div>
     );

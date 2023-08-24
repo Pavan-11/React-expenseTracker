@@ -1,7 +1,7 @@
 .form{
     display: flex;
     flex-direction: column;
-    width: 20vw;
+    width: 25vw;
     justify-content: center;
     margin: 2rem 35rem;
 }
@@ -64,4 +64,54 @@
 .tr td{
     position: relative;
     left: 1.5rem;
+}
+
+/* expenseForm.module.css */
+
+body.darkTheme{
+    background-color: #1a1a1a;
+    color: #ffffff;
+    /* Add other dark theme styles here */
+}
+
+/* Define other styles for light theme */
+
+.premiumButton {
+  background-color: #6b2c91;
+  color: #ffffff;
+  border: none;
+  border-radius: 5px;
+  padding: 8px 16px;
+  cursor: pointer;
+  
+}
+
+/* Assuming that you have a classes.css file */
+
+.toggleButton {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.toggleButton:hover {
+    background-color: #0056b3;
+}
+
+.downloadButton {
+    background-color: #28a745;
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    padding: 8px 16px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.downloadButton:hover {
+    background-color: #218838;
 }

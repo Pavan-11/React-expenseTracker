@@ -1,6 +1,6 @@
 import { Switch, Route, Redirect } from 'react-router-dom'
-import { useContext } from 'react';
-import AuthContext from './store/auth-context';
+import { useSelector } from 'react-redux';
+// import AuthContext from './store/auth-context';
 import AuthPage from './pages/AuthPage';
 import Profile from './pages/profile';
 import CompleteProfile from './Profile/profileForm2';
@@ -11,11 +11,28 @@ import ExpensesForm from './pages/expensesForm';
 
 
 function App() {
-  const authCtx = useContext(AuthContext);
-  return(
+
+  const isAuth = useSelector(state => state.auth.isLoggedIn);
+
+  return (
     <>
-    <Switch>
-      {!authCtx.isLoggedIn && (<Route path='/auth'>
+      <Switch>
+
+        <Route path='/auth' component={AuthPage} />
+
+        <Route path='/profile'>
+          {isAuth ? <Profile /> : <Redirect to='/auth' />}
+        </Route>
+
+        <Route path='/profileForm' component={CompleteProfile} />
+
+        <Route path='/expenseForm' component={ExpensesForm} />
+
+        <Redirect from='/' to='/auth' />
+
+
+      </Switch>
+      {/* {!authCtx.isLoggedIn && (<Route path='/auth'>
         <AuthPage />
       </Route>)}
 
@@ -34,8 +51,7 @@ function App() {
 
       <Route path="*">
         <Redirect to="/auth" />
-      </Route>
-    </Switch>
+      </Route> */}
     </>
   )
 }

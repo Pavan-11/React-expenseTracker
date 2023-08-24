@@ -1,7 +1,12 @@
-import { useState, useRef, useContext } from 'react';
+import {useDispatch, useSelector} from 'react-redux';
+import {authActions} from '../store/authReducer';
+
+
+
+import { useState, useRef} from 'react';
 import { useHistory } from 'react-router-dom';
 import classes from './AuthForm.module.css';
-import AuthContext from '../store/auth-context';
+// import AuthContext from '../store/auth-context';
 const AuthForm = () => {
   const emailInputRef = useRef();
   const passwordInputRef = useRef();
@@ -9,7 +14,9 @@ const AuthForm = () => {
   const history = useHistory();
 
 
-  const authCtx = useContext(AuthContext)
+  // const authCtx = useContext(AuthContext)
+  const dispatch = useDispatch();
+  const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
 
   const [isLogin, setIsLogin] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
@@ -21,6 +28,10 @@ const AuthForm = () => {
   const switchAuthModeHandler = () => {
     setIsLogin((prevState) => !prevState);
   };
+
+  const backToLogin = () => {
+    setResetEmailVisible((prevState) => !prevState)
+  }
 
   const resetPassword = async () => {
     setIsLoading(true);
@@ -93,7 +104,8 @@ const AuthForm = () => {
         });
       }
     }).then(data => {
-      authCtx.login(data.idToken, data.email);
+      dispatch(authActions.login());
+      // authCtx.login(data.idToken, data.email);
       console.log("this is data", data)
       history.replace('/profile')
     }).catch(err => {
@@ -105,7 +117,7 @@ const AuthForm = () => {
   return (
     <section className={classes.auth}>
       <form onSubmit={submitHandler} >
-        {!setResetEmailVisible && <div>
+        {!resetEmailVisible && <div>
 
           <h1>{isLogin ? 'Login' : 'Sign Up'}</h1>
           <div className={classes.control}>
@@ -145,7 +157,18 @@ const AuthForm = () => {
           </div>
         </div>)}
 
-        {!setResetEmailVisible && <div className={classes.actions}>
+        <div className={classes.actions}>
+          {!isLoggedIn && (<button
+           type='button'
+           className={classes.toggle}
+           onClick={backToLogin}
+           >
+            Back to Login
+           
+           </button>)}
+        </div>
+
+        {!resetEmailVisible && <div className={classes.actions}>
           <button
             type='button'
             className={classes.toggle}
@@ -160,13 +183,20 @@ const AuthForm = () => {
         <div className={classes.actions}>
           {!isLoading && <button>{isLogin ? 'Login' : 'Create Account'}</button>}
           {isLoading && <p>Sending Request...</p>}
-          <button
+          {!isLoggedIn && (<button
             type='button'
             className={classes.toggle}
             onClick={switchAuthModeHandler}
           >
             {isLogin ? 'Create new account' : 'Login with existing account'}
           </button>
+          )}
+
+          {isLoggedIn && (
+            <button onClick={() => dispatch(authActions.logout())}>
+              Logout
+            </button>
+          )}
         </div>
       </form>
     </section>
